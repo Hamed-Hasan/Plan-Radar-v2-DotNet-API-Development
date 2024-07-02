@@ -36,12 +36,20 @@ namespace AutoCADApi.Controllers
                 return NotFound("No image files found.");
             }
 
+            var response = imageFiles.Select(file => new
+            {
+                file.Id,
+                file.FileName,
+                file.FilePath // Return file path instead of file data
+            });
+
             _logger.LogInformation($"{imageFiles.Count} image files found.");
-            return imageFiles;
+            return Ok(response);
         }
 
+
         [HttpGet("{id}")]
-        public async Task<ActionResult<ImageFile>> GetImageFile(int id)
+        public async Task<ActionResult> GetImageFile(int id)
         {
             _logger.LogInformation($"Fetching image file with ID {id}.");
 
@@ -57,9 +65,6 @@ namespace AutoCADApi.Controllers
                 return NotFound();
             }
 
-            // Convert the file data to a base64 string
-            var base64FileData = Convert.ToBase64String(file.FileData);
-
             // Transform the pins collection to a simple array
             var pinsArray = file.Pins.Select(p => new
             {
@@ -72,7 +77,7 @@ namespace AutoCADApi.Controllers
                 {
                     p.UploadFile.Id,
                     p.UploadFile.FileName,
-                    FileData = Convert.ToBase64String(p.UploadFile.FileData)
+                    FilePath = Path.Combine("UploadedFiles", "PlanRadar", p.ImageFileId.ToString(), p.UploadFile.FileName) // Use unique ID in file path
                 },
                 ModalContent = p.ModalContent == null ? new
                 {
@@ -96,15 +101,15 @@ namespace AutoCADApi.Controllers
             {
                 file.Id,
                 file.FileName,
-                FileData = base64FileData,
+                FilePath = Path.Combine("UploadedFiles", "PlanRadar", file.Id.ToString(), file.FileName), // Use unique ID in file path
                 file.Urn,
                 Pins = pinsArray
             };
 
             _logger.LogInformation($"Returning image file with ID {id} and {pinsArray.Length} pins.");
-
             return Ok(response);
         }
+
 
         [HttpPost("convert")]
         public async Task<ActionResult<string>> ConvertDWGToImage([FromForm] IFormFile file)
@@ -145,31 +150,47 @@ namespace AutoCADApi.Controllers
                 return BadRequest("No file or image data provided.");
             }
 
-            byte[] fileData;
-
-            if (file != null)
-            {
-                using var memoryStream = new MemoryStream();
-                await file.CopyToAsync(memoryStream);
-                fileData = memoryStream.ToArray();
-            }
-            else
-            {
-                fileData = Convert.FromBase64String(base64Image);
-            }
-
+            // Step 1: Save metadata to get the unique ID
             var imageFile = new ImageFile
             {
-                FileName = file?.FileName ?? "converted_image.jpg",
-                FileData = fileData
+                FileName = file != null ? file.FileName : "converted_image.jpg",
+                FilePath = "temp" // Temporary path to satisfy the non-null constraint
             };
 
             _context.ImageFiles.Add(imageFile);
             await _context.SaveChangesAsync();
 
+            // Step 2: Construct the file path using the unique ID
+            string fileName = imageFile.FileName;
+            string uniqueDirectory = Path.Combine("UploadedFiles", "PlanRadar", imageFile.Id.ToString());
+            string filePath = Path.Combine(uniqueDirectory, fileName);
+
+            // Ensure the directory exists
+            Directory.CreateDirectory(uniqueDirectory);
+
+            // Step 3: Save the file data to the constructed file path
+            if (file != null)
+            {
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+            }
+            else
+            {
+                byte[] fileData = Convert.FromBase64String(base64Image);
+                await System.IO.File.WriteAllBytesAsync(filePath, fileData);
+            }
+
+            // Step 4: Update the file path in the database
+            imageFile.FilePath = filePath;
+            _context.Entry(imageFile).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
             _logger.LogInformation($"Image file with ID {imageFile.Id} uploaded successfully.");
             return CreatedAtAction(nameof(GetImageFile), new { id = imageFile.Id }, imageFile);
         }
+
 
         private byte[] ConvertDWGToImage(byte[] dwgData)
         {

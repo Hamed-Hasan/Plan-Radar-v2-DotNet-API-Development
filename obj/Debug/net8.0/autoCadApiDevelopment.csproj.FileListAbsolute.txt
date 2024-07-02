@@ -143,3 +143,4 @@ H:\Build Empowering Energy\PlanRadar\autoCadApiDevelopment\autoCadApiDevelopment
 H:\Build Empowering Energy\PlanRadar\autoCadApiDevelopment\autoCadApiDevelopment\bin\Debug\net8.0\MessagePack.dll
 H:\Build Empowering Energy\PlanRadar\autoCadApiDevelopment\autoCadApiDevelopment\bin\Debug\net8.0\MessagePack.Annotations.dll
 H:\Build Empowering Energy\PlanRadar\autoCadApiDevelopment\autoCadApiDevelopment\bin\Debug\net8.0\Microsoft.NET.StringTools.dll
+H:\Build Empowering Energy\PlanRadar\autoCadApiDevelopment\autoCadApiDevelopment\obj\Debug\net8.0\autoCadApiDevelopment.sourcelink.json

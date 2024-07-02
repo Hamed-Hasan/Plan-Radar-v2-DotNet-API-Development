@@ -20,6 +20,7 @@ namespace AutoCADApi.Models
         [Key]
         public int Id { get; set; }
         public string FileName { get; set; } = string.Empty;
+        public string FilePath { get; set; }
         public byte[] FileData { get; set; } = Array.Empty<byte>();
         public string Urn { get; set; } = string.Empty;
 

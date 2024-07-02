@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using System.Text.Json.Serialization;
 using AutoCADApi.Hubs;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 public class Program
 {
@@ -79,6 +80,18 @@ public class Startup
             app.UseSwaggerUI();
         }
 
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            FileProvider = new PhysicalFileProvider(
+                Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles")),
+            RequestPath = "/UploadedFiles",
+            OnPrepareResponse = ctx =>
+            {
+                ctx.Context.Response.Headers.Append("Access-Control-Allow-Origin", "http://localhost:3000");
+                ctx.Context.Response.Headers.Append("Access-Control-Allow-Credentials", "true");
+            }
+        });
+
         app.UseHttpsRedirection();
 
         app.UseRouting();
@@ -93,4 +106,6 @@ public class Startup
             endpoints.MapHub<NotificationHub>("/notificationHub");
         });
     }
+
+
 }

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace autoCadApiDevelopment.Migrations
 {
     [DbContext(typeof(AutoCadContext))]
-    [Migration("20240611151331_update-imagefield-fixed")]
-    partial class updateimagefieldfixed
+    [Migration("20240702060606_filePathv1")]
+    partial class filePathv1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -62,6 +62,10 @@ namespace autoCadApiDevelopment.Migrations
                         .HasColumnType("varbinary(max)");
 
                     b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FilePath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -122,15 +126,17 @@ namespace autoCadApiDevelopment.Migrations
                     b.Property<int?>("AutoCADFileId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("CreatedBy")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ImageFileId")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("UploadFileId")
