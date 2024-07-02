@@ -34,6 +34,7 @@ namespace AutoCADApi.Models
         public int Id { get; set; }
         public string FileName { get; set; } = string.Empty;
         public byte[] FileData { get; set; } = Array.Empty<byte>();
+        public string FilePath { get; set; } = string.Empty;
     }
 
 

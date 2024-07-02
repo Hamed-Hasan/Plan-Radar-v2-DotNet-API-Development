@@ -68,20 +68,30 @@ namespace AutoCADApi.Controllers
                 }
             };
 
+            _context.Pins.Add(pin);
+            await _context.SaveChangesAsync(); // Save first to get the Pin Id
+
             if (formCollection.Files.Count > 0)
             {
                 foreach (var file in formCollection.Files)
                 {
                     if (file.Name == "file")
                     {
+                        var pinDirectory = Path.Combine("UploadedFiles", "PinFile", pin.Id.ToString());
+                        Directory.CreateDirectory(pinDirectory);
+                        var filePath = Path.Combine(pinDirectory, file.FileName);
+
                         using var memoryStream = new MemoryStream();
                         await file.CopyToAsync(memoryStream);
                         var uploadFile = new UploadFile
                         {
                             FileName = file.FileName,
-                            FileData = memoryStream.ToArray()
+                            FileData = memoryStream.ToArray(),
+                            FilePath = filePath
                         };
                         pin.UploadFile = uploadFile;
+
+                        await System.IO.File.WriteAllBytesAsync(filePath, uploadFile.FileData);
                     }
                     else if (file.Name.StartsWith("audioFile"))
                     {
@@ -96,10 +106,11 @@ namespace AutoCADApi.Controllers
                         pin.VideoClip = memoryStream.ToArray();
                     }
                 }
+
+                _context.Entry(pin).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
             }
 
-            _context.Pins.Add(pin);
-            await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetPin), new { id = pin.Id }, pin);
         }
 

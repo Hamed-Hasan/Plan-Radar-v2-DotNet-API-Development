@@ -40,7 +40,7 @@ namespace AutoCADApi.Controllers
             {
                 file.Id,
                 file.FileName,
-                file.FilePath // Return file path instead of file data
+                file.FilePath 
             });
 
             _logger.LogInformation($"{imageFiles.Count} image files found.");
@@ -65,7 +65,6 @@ namespace AutoCADApi.Controllers
                 return NotFound();
             }
 
-            // Transform the pins collection to a simple array
             var pinsArray = file.Pins.Select(p => new
             {
                 p.Id,
@@ -77,7 +76,7 @@ namespace AutoCADApi.Controllers
                 {
                     p.UploadFile.Id,
                     p.UploadFile.FileName,
-                    FilePath = Path.Combine("UploadedFiles", "PlanRadar", p.ImageFileId.ToString(), p.UploadFile.FileName) // Use unique ID in file path
+                    FilePath = Path.Combine("UploadedFiles", "PinFile", p.Id.ToString(), p.UploadFile.FileName)
                 },
                 ModalContent = p.ModalContent == null ? new
                 {
@@ -101,7 +100,7 @@ namespace AutoCADApi.Controllers
             {
                 file.Id,
                 file.FileName,
-                FilePath = Path.Combine("UploadedFiles", "PlanRadar", file.Id.ToString(), file.FileName), // Use unique ID in file path
+                FilePath = Path.Combine("UploadedFiles", "PlanRadar", file.Id.ToString(), file.FileName),
                 file.Urn,
                 Pins = pinsArray
             };
@@ -109,6 +108,7 @@ namespace AutoCADApi.Controllers
             _logger.LogInformation($"Returning image file with ID {id} and {pinsArray.Length} pins.");
             return Ok(response);
         }
+
 
 
         [HttpPost("convert")]
@@ -154,7 +154,7 @@ namespace AutoCADApi.Controllers
             var imageFile = new ImageFile
             {
                 FileName = file != null ? file.FileName : "converted_image.jpg",
-                FilePath = "temp" // Temporary path to satisfy the non-null constraint
+                FilePath = "temp" 
             };
 
             _context.ImageFiles.Add(imageFile);
