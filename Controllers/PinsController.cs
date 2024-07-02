@@ -75,11 +75,13 @@ namespace AutoCADApi.Controllers
             {
                 foreach (var file in formCollection.Files)
                 {
+                    var pinDirectory = Path.Combine("UploadedFiles", "PinDetails", pin.Id.ToString());
+
                     if (file.Name == "file")
                     {
-                        var pinDirectory = Path.Combine("UploadedFiles", "PinFile", pin.Id.ToString());
-                        Directory.CreateDirectory(pinDirectory);
-                        var filePath = Path.Combine(pinDirectory, file.FileName);
+                        var fileDirectory = Path.Combine(pinDirectory, "PinFile");
+                        Directory.CreateDirectory(fileDirectory);
+                        var filePath = Path.Combine(fileDirectory, file.FileName);
 
                         using var memoryStream = new MemoryStream();
                         await file.CopyToAsync(memoryStream);
@@ -95,15 +97,25 @@ namespace AutoCADApi.Controllers
                     }
                     else if (file.Name.StartsWith("audioFile"))
                     {
+                        var audioDirectory = Path.Combine(pinDirectory, "AudioClip");
+                        Directory.CreateDirectory(audioDirectory);
+                        var audioPath = Path.Combine(audioDirectory, file.FileName);
+
                         using var memoryStream = new MemoryStream();
                         await file.CopyToAsync(memoryStream);
                         pin.AudioClip = memoryStream.ToArray();
+                        await System.IO.File.WriteAllBytesAsync(audioPath, pin.AudioClip);
                     }
                     else if (file.Name == "videoFile")
                     {
+                        var videoDirectory = Path.Combine(pinDirectory, "VideoClip");
+                        Directory.CreateDirectory(videoDirectory);
+                        var videoPath = Path.Combine(videoDirectory, file.FileName);
+
                         using var memoryStream = new MemoryStream();
                         await file.CopyToAsync(memoryStream);
                         pin.VideoClip = memoryStream.ToArray();
+                        await System.IO.File.WriteAllBytesAsync(videoPath, pin.VideoClip);
                     }
                 }
 

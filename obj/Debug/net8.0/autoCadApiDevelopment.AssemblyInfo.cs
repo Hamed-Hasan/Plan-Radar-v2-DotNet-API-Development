@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("autoCadApiDevelopment")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+40ea44e9215d4621f54d12a3fc3041f7cdff6b9c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fbdb7df4fc44b1acbed98aaf0e8d1b92b6377002")]
 [assembly: System.Reflection.AssemblyProductAttribute("autoCadApiDevelopment")]
 [assembly: System.Reflection.AssemblyTitleAttribute("autoCadApiDevelopment")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
