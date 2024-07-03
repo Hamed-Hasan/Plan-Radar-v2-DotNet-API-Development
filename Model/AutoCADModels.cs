@@ -55,6 +55,7 @@ namespace AutoCADApi.Models
         public UploadFile? UploadFile { get; set; }
         public ModalContent? ModalContent { get; set; }
         public string CreatedBy { get; set; } = string.Empty;
+        public int SliderStatus { get; set; }
     }
 
     public class ModalContent

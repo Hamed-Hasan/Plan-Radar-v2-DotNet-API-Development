@@ -65,7 +65,9 @@ namespace AutoCADApi.Controllers
                     CreatedBy = createdBy,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
-                }
+                },
+                // Accept the slider status from the form
+                SliderStatus = int.Parse(formCollection["sliderStatus"])
             };
 
             _context.Pins.Add(pin);
