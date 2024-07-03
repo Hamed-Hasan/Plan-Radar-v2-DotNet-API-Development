@@ -76,7 +76,7 @@ namespace AutoCADApi.Controllers
                 {
                     p.UploadFile.Id,
                     p.UploadFile.FileName,
-                    FilePath = Path.Combine("UploadedFiles", "PinDetails", p.Id.ToString(), "PinFile", p.UploadFile.FileName)
+                    FilePath = Path.Combine("UploadedFiles", "PlanRadar", "PinDetails", p.Id.ToString(), "PinFile", p.UploadFile.FileName)
                 },
                 ModalContent = p.ModalContent == null ? new
                 {
@@ -100,7 +100,7 @@ namespace AutoCADApi.Controllers
             {
                 file.Id,
                 file.FileName,
-                FilePath = Path.Combine("UploadedFiles", "ViewFiles", file.Id.ToString(), file.FileName),
+                FilePath = Path.Combine("UploadedFiles", "PlanRadar", "ViewFiles", file.Id.ToString(), file.FileName),
                 file.Urn,
                 Pins = pinsArray
             };
@@ -162,7 +162,7 @@ namespace AutoCADApi.Controllers
 
             // Step 2: Construct the file path using the unique ID
             string fileName = imageFile.FileName;
-            string uniqueDirectory = Path.Combine("UploadedFiles", "ViewFiles", imageFile.Id.ToString());
+            string uniqueDirectory = Path.Combine("UploadedFiles", "PlanRadar", "ViewFiles", imageFile.Id.ToString());
             string filePath = Path.Combine(uniqueDirectory, fileName);
 
             // Ensure the directory exists

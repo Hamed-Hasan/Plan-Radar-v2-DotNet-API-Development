@@ -75,7 +75,7 @@ namespace AutoCADApi.Controllers
             {
                 foreach (var file in formCollection.Files)
                 {
-                    var pinDirectory = Path.Combine("UploadedFiles", "PinDetails", pin.Id.ToString());
+                    var pinDirectory = Path.Combine("UploadedFiles", "PlanRadar", "PinDetails", pin.Id.ToString());
 
                     if (file.Name == "file")
                     {
